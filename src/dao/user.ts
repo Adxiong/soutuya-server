@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 16:52:06
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-08 18:07:31
+ * @LastEditTime: 2022-04-09 22:59:24
  */
 import util from "../utils/util";
 import pool from "./pool";
@@ -18,8 +18,13 @@ class UserDao {
    */
   async queryByUser(user: string): Promise<UserInfo | null>{
     const sql = 'SELECT * FROM user WHERE user = ? LIMIT 1'
-    const result: UserInfo = await pool.query<UserInfo>(sql, [user]) || null
-    return result
+    try {
+      const result: UserInfo[] = await pool.query<UserInfo[]>(sql, [user])
+      return result.length ? result[0] : null
+    }catch( err ){
+      throw err
+    }
+    
   }
 
   /**
@@ -29,34 +34,25 @@ class UserDao {
    */
   async register(params: RegisterParams): Promise<boolean> {
     const sql =`
-      INSERT INTO USER
-      VALUES(
-        id: ?,
-        user: ?,
-        password: ?,
-        nick: ?,
-        avatar: ?,
-        createTime: ?,
-        salt: ?,
-        lastTime: ?,
-        lastIp: ?,
-        lastPlatform: ?
-      )`
+      INSERT INTO USER(
+        id, user,password,nick,avatar,create_time,salt,last_time,last_ip,last_platform
+      )
+      VALUES(?,?,?,?,?,?,?,?,?,?)`
       const id = util.uuid()
-      const salt = ""
-      const password = ""
-      const time = new Date().toString()
+      const salt = util.randomSalt()
+      const time = new Date()
       try {
         await pool.write(sql, [
           id,
           params.user,
-          password,
+          util.encryption(params.password, salt),
           params.nick,
+          "",
           time,
           salt,
           time,
-          params.lastIp,
-          params.lastPlatform
+          params.lastIp ?? "",
+          params.lastPlatform ?? ""
         ])
         return true
       }
@@ -68,4 +64,4 @@ class UserDao {
 }
 
 
-export default UserDao
+export default new UserDao()

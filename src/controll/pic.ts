@@ -4,11 +4,12 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:59
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-08 11:26:20
+ * @LastEditTime: 2022-04-09 11:25:05
  */
 
 import { Router, Request, Response, NextFunction } from "express"
 import formidable = require("formidable")
+import { ApiResult, ResponseStatus } from "../utils/apiResult";
 
 const router = Router()
 
@@ -17,6 +18,10 @@ const router = Router()
  * @param { num:数量; time:时间(ms) }
  */
 router.get('/recommend', (req: Request, res: Response, next: NextFunction) => {
+  req['session'].pv = req["session"].pv ? req["session"].pv +1 : 1  
+  console.log(req['session'], req.headers.cookie);
+  
+  return res.json(new ApiResult(ResponseStatus.success, {view:  req["session"].uv} , "ok"))
   const {
     num,
     time,

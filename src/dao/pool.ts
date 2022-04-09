@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 16:17:35
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-08 16:55:39
+ * @LastEditTime: 2022-04-09 18:06:49
  */
 
 import * as mysql from "mysql"
@@ -28,7 +28,7 @@ function formatRes <T>(sql: string, res: any): T[] {
 const pool: mysql.Pool = mysql.createPool(Config.sqlConfig)
 
 class Pool {
-    
+
   query<T>(sql: string, params?: any[]): Promise<T> {
     logger.info('sql quert', sql, params)
     return new Promise( (resolve, reject) => {
