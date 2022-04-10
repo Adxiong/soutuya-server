@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:54
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-09 23:00:35
+ * @LastEditTime: 2022-04-10 19:07:10
  */
 
 import { Router, Request, Response, NextFunction } from "express";
@@ -20,6 +20,9 @@ const router = Router()
  */
 router.post("/login", async(req: Request, res: Response) => {
   const { user, password } = req.body
+  console.log(req.headers);
+  
+  console.log(`ip===>`,req['ipInfo'])
   if( !user || !password ) {
     return res.json(new ApiResult(ResponseStatus.fail, null, "账号或者密码为空！"))
   }

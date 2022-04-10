@@ -5,7 +5,7 @@ import { cors } from 'cors';
  * @Author: Adxiong
  * @Date: 2022-04-07 23:23:37
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-09 11:12:09
+ * @LastEditTime: 2022-04-09 23:22:47
  */
 
 import * as express from "express"
@@ -15,9 +15,11 @@ import * as session from "express-session"
 import jsonwebtoken from "jsonwebtoken"
 import api from "./controll"
 import util from './utils/util';
+const expressIp = require('express-ip')
 const app = express()
 
 app.use(cors())
+app.use(expressIp().getIpInfoMiddleware)
 app.use(session({
   genid: (req) => {
     return util.uuid()
