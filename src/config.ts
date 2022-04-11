@@ -4,9 +4,9 @@
  * @Author: Adxiong
  * @Date: 2022-04-07 23:25:45
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-09 18:15:55
+ * @LastEditTime: 2022-04-11 21:33:50
  */
-
+import * as qiniu from "qiniu"
 interface ConfigStruct {
   server: {
     port: number,
@@ -18,6 +18,13 @@ interface ConfigStruct {
     password: string,
     database: string,
     port: number
+  },
+  qiniuConfig: {
+    accessKey: string,
+    secretKey: string,
+    scope: string,
+    zone: qiniu.conf.Zone,
+    domain: string
   }
 }
 
@@ -32,7 +39,13 @@ const Config: ConfigStruct = {
     password: "123456",
     database: "soutuya",
     port: 3306,
-   
+  },
+  qiniuConfig: {
+    accessKey: "3A7cP4Y8RnJnsvkpbihcHkPx229dkCksouZjuSCI",
+    secretKey: "3ebSGPX_opXt9ZNBXx5Df2zQY61pIqZ_0r2zBttY",
+    scope: "adxiong-images",
+    zone: qiniu.zone.Zone_z2,
+    domain: "http://ra6ar9f90.hn-bkt.clouddn.com/"
   }
 }
 
