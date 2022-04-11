@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:59
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-11 23:47:38
+ * @LastEditTime: 2022-04-11 23:56:06
  */
 
 import { Router, Request, Response, NextFunction } from "express"
@@ -13,6 +13,7 @@ import { ApiResult, ResponseStatus } from "../utils/apiResult";
 import qiNiu from "../utils/qiNiu";
 import * as fs from "fs"
 import PicServer from '../service/pic'
+import Config from "../config";
 
 const router = Router()
 
@@ -28,6 +29,7 @@ router.get('/recommend', async(req: Request, res: Response, next: NextFunction) 
     start,
     time,
   } = req.query
+  console.log(req);
   
   try{
     const result = await PicServer.pageQueryPics(+num, +start || 0) 
@@ -56,7 +58,7 @@ router.post('/upload', (req: Request, res: Response, next: NextFunction) => {
       const result = await qiNiu.upload( file)
       PicServer.insertPic({
         name: files["file"]["originalFilename"],
-        addr: result.key,
+        addr: Config.qiniuConfig.domain + result.key,
         uploader: "",
       })
       console.log(result);
