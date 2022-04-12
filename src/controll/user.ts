@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:54
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-10 19:07:10
+ * @LastEditTime: 2022-04-12 23:16:01
  */
 
 import { Router, Request, Response, NextFunction } from "express";
@@ -14,13 +14,22 @@ import util from "../utils/util";
 
 const router = Router()
 
+
+router.get("/getCurrentUser", (req: Request, res: Response) => {
+  if(req['session'].currentUser) {
+    return res.json(new ApiResult(ResponseStatus.success, {currentUser: req['session'].currentUser} , "登录成功" ))
+  }else {
+    return res.json(new ApiResult(ResponseStatus.fail, null, "账户过期"))
+  }
+})
+
 /**
  * login 登录
  * @param { user: 账号; pw: 密码; time:时间(ms) }
  */
 router.post("/login", async(req: Request, res: Response) => {
   const { user, password } = req.body
-  console.log(req.headers);
+  console.log(req.body);
   
   console.log(`ip===>`,req['ipInfo'])
   if( !user || !password ) {
@@ -31,6 +40,11 @@ router.post("/login", async(req: Request, res: Response) => {
     if( userInfo ) {
       const pwAndSalt = util.encryption(password, userInfo.salt)
       if ( pwAndSalt === userInfo.password) {
+        req['session'].currentUser = {
+          id: userInfo.id,
+          avatar: userInfo.avatar,
+          nick: userInfo.nick
+        }
         return res.json(new ApiResult(ResponseStatus.success, {
           id: userInfo.id,
           avatar: userInfo.avatar,

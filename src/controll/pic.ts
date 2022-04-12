@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:59
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-11 23:56:06
+ * @LastEditTime: 2022-04-12 14:54:32
  */
 
 import { Router, Request, Response, NextFunction } from "express"
@@ -22,7 +22,8 @@ const router = Router()
  * @param { num:数量; time:时间(ms) }
  */
 router.get('/recommend', async(req: Request, res: Response, next: NextFunction) => {
-
+  console.log(req['session']);
+  
   // return res.json(new ApiResult(ResponseStatus.success, {view:  req["session"].uv} , "ok"))
   const {
     num,
