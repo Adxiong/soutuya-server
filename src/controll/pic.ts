@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:59
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-12 14:54:32
+ * @LastEditTime: 2022-04-13 21:58:29
  */
 
 import { Router, Request, Response, NextFunction } from "express"
@@ -60,7 +60,7 @@ router.post('/upload', (req: Request, res: Response, next: NextFunction) => {
       PicServer.insertPic({
         name: files["file"]["originalFilename"],
         addr: Config.qiniuConfig.domain + result.key,
-        uploader: "",
+        uploader: req['session'].currentUser.id,
       })
       console.log(result);
       return res.json(new ApiResult(ResponseStatus.success, {result: true}, "success"))

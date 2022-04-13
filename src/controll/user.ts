@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:54
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-12 23:16:01
+ * @LastEditTime: 2022-04-13 22:50:44
  */
 
 import { Router, Request, Response, NextFunction } from "express";
@@ -15,12 +15,17 @@ import util from "../utils/util";
 const router = Router()
 
 
-router.get("/getCurrentUser", (req: Request, res: Response) => {
+router.get("/currentUser", (req: Request, res: Response) => {
   if(req['session'].currentUser) {
-    return res.json(new ApiResult(ResponseStatus.success, {currentUser: req['session'].currentUser} , "登录成功" ))
+    return res.json(new ApiResult(ResponseStatus.success, {...req['session'].currentUser} , "登录成功" ))
   }else {
     return res.json(new ApiResult(ResponseStatus.fail, null, "账户过期"))
   }
+})
+
+router.get("/logout", async(req: Request, res: Response) => {
+  req["session"].destroy()
+  return res.json(new ApiResult(ResponseStatus.success, {result: true}, "success"))
 })
 
 /**
@@ -43,12 +48,14 @@ router.post("/login", async(req: Request, res: Response) => {
         req['session'].currentUser = {
           id: userInfo.id,
           avatar: userInfo.avatar,
+          user: userInfo.user,
           nick: userInfo.nick
         }
         return res.json(new ApiResult(ResponseStatus.success, {
           id: userInfo.id,
           avatar: userInfo.avatar,
-          nick: userInfo.nick
+          nick: userInfo.nick,
+          user: userInfo.user
         }, "登录成功"))
       } else {
         return res.json(new ApiResult(ResponseStatus.fail, null, "密码错误"))
