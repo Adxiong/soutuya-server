@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-11 21:41:17
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-11 23:42:43
+ * @LastEditTime: 2022-04-14 19:25:59
  */
 import pool from "./pool"
 import { InsertPicParams, PicInstance } from "../types/pic"
@@ -29,7 +29,16 @@ class PicDao {
     }catch(e) {
       throw(e)
     }
+  }
 
+  async myUploadPics(start: number, num: number): Promise<PicInstance[]>{
+    const sql = "SELECT * FROM pic WHERE id > ? LIMIT ?"
+    try {
+      const data = await pool.query<PicInstance[]>(sql, [start, num])
+      return data.length ? data : []
+    }catch (e) {
+      throw(e)
+    }
   }
 }
 

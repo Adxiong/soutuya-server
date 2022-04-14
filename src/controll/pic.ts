@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:59
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-13 21:58:29
+ * @LastEditTime: 2022-04-14 19:25:12
  */
 
 import { Router, Request, Response, NextFunction } from "express"
@@ -71,6 +71,17 @@ router.post('/upload', (req: Request, res: Response, next: NextFunction) => {
     
   })
   
+})
+
+router.get("/myUploadPics", async(req: Request, res: Response, next: NextFunction) => {
+  if(req['session']) {
+    const page : number = +req.query['page'] || 0
+    const num: number = +req.query['num'] || 0
+    const data = await PicServer.myUploadPics(page*num, num)
+    return res.json(new ApiResult(ResponseStatus.success, data, "success"))
+  } else {
+    return res.json(new ApiResult( ResponseStatus.fail, null, "没有权限"))
+  }
 })
 
 export default router
