@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 16:58:25
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-08 17:18:03
+ * @LastEditTime: 2022-04-16 03:58:30
  */
 
 interface UserInfo {
@@ -26,4 +26,11 @@ interface RegisterParams {
   nick: string,
   lastIp?: string,
   lastPlatform?: string,
+}
+
+interface UpdateUserInfoParams {
+  id: string,
+  nick?: string,
+  password?: string,
+  avatar?: string
 }

@@ -4,13 +4,17 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:54
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-13 22:50:44
+ * @LastEditTime: 2022-04-16 04:08:03
  */
 
 import { Router, Request, Response, NextFunction } from "express";
 import { ApiResult, ResponseStatus } from "../utils/apiResult";
 import UserServer from "../service/user"
 import util from "../utils/util";
+import formidable = require("formidable");
+import * as fs from "fs";
+import qiNiu from "../utils/qiNiu";
+import Config from "../config";
 
 const router = Router()
 
@@ -34,7 +38,6 @@ router.get("/logout", async(req: Request, res: Response) => {
  */
 router.post("/login", async(req: Request, res: Response) => {
   const { user, password } = req.body
-  console.log(req.body);
   
   console.log(`ip===>`,req['ipInfo'])
   if( !user || !password ) {
@@ -90,6 +93,42 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
   }catch(e){
     return res.json(new ApiResult(ResponseStatus.fail, null, e.message))
   }
+})
+
+
+router.post('uploadAvatar', (req: Request, res: Response, next: NextFunction) => {
+  if(!req['session'].currentUser){
+    return res.json(new ApiResult(ResponseStatus.fail, null, "身份验证失败"))
+  }
+  const form = new formidable.IncomingForm()
+  form.parse(req, async(err,fields,files)=> {
+    if(err){
+      console.log(err);
+    }
+    console.log(`fields====>`, fields);
+    // console.log(`files=====>`, files);
+    const file = fs.createReadStream(files["file"]['filepath'])
+
+    try{
+      const result = await qiNiu.upload( file)
+      UserServer.uploadAvatar({
+        id: req['session'].currentUser.id,
+        avatar: Config.qiniuConfig.domain + result.key
+      })
+      
+      // PicServer.insertPic({
+      //   name: files["file"]["originalFilename"],
+      //   addr: Config.qiniuConfig.domain + result.key,
+      //   uploader: req['session'].currentUser.id,
+      // })
+      return res.json(new ApiResult(ResponseStatus.success, {result: true}, "success"))
+    }catch(e) {
+      console.log(e);
+      
+    }
+    
+  })
+  
 })
 
 export default router 

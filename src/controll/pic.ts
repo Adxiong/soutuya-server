@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:59
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-14 19:25:12
+ * @LastEditTime: 2022-04-16 03:14:40
  */
 
 import { Router, Request, Response, NextFunction } from "express"
@@ -22,7 +22,6 @@ const router = Router()
  * @param { num:数量; time:时间(ms) }
  */
 router.get('/recommend', async(req: Request, res: Response, next: NextFunction) => {
-  console.log(req['session']);
   
   // return res.json(new ApiResult(ResponseStatus.success, {view:  req["session"].uv} , "ok"))
   const {
@@ -30,7 +29,6 @@ router.get('/recommend', async(req: Request, res: Response, next: NextFunction) 
     start,
     time,
   } = req.query
-  console.log(req);
   
   try{
     const result = await PicServer.pageQueryPics(+num, +start || 0) 
@@ -62,7 +60,6 @@ router.post('/upload', (req: Request, res: Response, next: NextFunction) => {
         addr: Config.qiniuConfig.domain + result.key,
         uploader: req['session'].currentUser.id,
       })
-      console.log(result);
       return res.json(new ApiResult(ResponseStatus.success, {result: true}, "success"))
     }catch(e) {
       console.log(e);

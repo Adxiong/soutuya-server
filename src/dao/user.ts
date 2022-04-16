@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 16:52:06
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-09 22:59:24
+ * @LastEditTime: 2022-04-16 04:05:46
  */
 import util from "../utils/util";
 import pool from "./pool";
@@ -59,6 +59,25 @@ class UserDao {
       catch( err ){
         throw(err)
       }
+  }
+
+  async updateUserInfoById(data: UpdateUserInfoParams):Promise<boolean> {
+    const props = []
+    const params = []
+    for (const key in data) {
+      if (key !== 'id' && data[key]) {
+        props.push(`${key}=?`)
+        params.push(data[key])
+      }
+    }
+    params.push(data.id)
+    const sql = `update user set ${props.join(',')} where id=?`
+    try{
+      await pool.write(sql, params)
+      return true
+    } catch(e){
+      throw(e)
+    }
   }
 
 }
