@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:59
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-16 03:14:40
+ * @LastEditTime: 2022-04-30 13:03:36
  */
 
 import { Router, Request, Response, NextFunction } from "express"
@@ -14,6 +14,7 @@ import qiNiu from "../utils/qiNiu";
 import * as fs from "fs"
 import PicServer from '../service/pic'
 import Config from "../config";
+import path = require("path");
 
 const router = Router()
 
@@ -45,18 +46,20 @@ router.get('/recommend', async(req: Request, res: Response, next: NextFunction) 
  */
 router.post('/upload', (req: Request, res: Response, next: NextFunction) => {
   const form = new formidable.IncomingForm()
+
   form.parse(req, async(err,fields,files)=> {
     if(err){
       console.log(err);
     }
-    console.log(`fields====>`, fields);
-    // console.log(`files=====>`, files);
-    const file = fs.createReadStream(files["file"]['filepath'])
+
+    const file = fs.createReadStream(files["files"]['filepath'])
 
     try{
       const result = await qiNiu.upload( file)
       PicServer.insertPic({
-        name: files["file"]["originalFilename"],
+        title: fields['title'] as string,
+        keyWord: fields["keyWord"] as string,
+        name: files["files"]["originalFilename"],
         addr: Config.qiniuConfig.domain + result.key,
         uploader: req['session'].currentUser.id,
       })
@@ -78,6 +81,21 @@ router.get("/myUploadPics", async(req: Request, res: Response, next: NextFunctio
     return res.json(new ApiResult(ResponseStatus.success, data, "success"))
   } else {
     return res.json(new ApiResult( ResponseStatus.fail, null, "没有权限"))
+  }
+})
+
+router.post("/batchDeletePic", async(req: Request, res: Response, next: NextFunction) => {
+  if(req['session']) {
+    const data: string[] = req.body.data
+    console.log("删除的照片===》",data);
+   try {
+    const result = await PicServer.batchDeletePic(data)
+    console.log(result);
+   }catch(err){
+     console.log(err);
+     
+   }
+    
   }
 })
 

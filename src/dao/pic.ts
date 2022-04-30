@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-11 21:41:17
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-14 19:25:59
+ * @LastEditTime: 2022-04-30 13:04:49
  */
 import pool from "./pool"
 import { InsertPicParams, PicInstance } from "../types/pic"
@@ -22,9 +22,9 @@ class PicDao {
   }
 
   async insertPic(params: InsertPicParams): Promise<boolean>{
-    const sql = "INSERT INTO PIC(name, addr, uploader) VALUES(?, ?, ?)"
+    const sql = "INSERT INTO PIC(name, title, keyWord, addr, uploader) VALUES(?, ?, ?, ?, ?)"
     try {
-      await pool.write(sql, [params.name, params.addr, params.uploader])
+      await pool.write(sql, [params.name, params.title, params.keyWord, params.addr, params.uploader])
       return true
     }catch(e) {
       throw(e)

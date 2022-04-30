@@ -4,10 +4,12 @@
  * @Author: Adxiong
  * @Date: 2022-04-11 23:10:54
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-14 18:56:50
+ * @LastEditTime: 2022-04-30 13:03:31
  */
 
 export interface InsertPicParams {
+  title: string,
+  keyWord: string
   name: string,
   addr: string,
   uploader: string,

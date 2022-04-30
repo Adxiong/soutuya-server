@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:54
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-16 04:08:03
+ * @LastEditTime: 2022-04-18 22:26:31
  */
 
 import { Router, Request, Response, NextFunction } from "express";
@@ -96,7 +96,7 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
 })
 
 
-router.post('uploadAvatar', (req: Request, res: Response, next: NextFunction) => {
+router.post('/uploadAvatar', (req: Request, res: Response, next: NextFunction) => {
   if(!req['session'].currentUser){
     return res.json(new ApiResult(ResponseStatus.fail, null, "身份验证失败"))
   }
@@ -111,17 +111,12 @@ router.post('uploadAvatar', (req: Request, res: Response, next: NextFunction) =>
 
     try{
       const result = await qiNiu.upload( file)
+      const addr = Config.qiniuConfig.domain + result.key
       UserServer.uploadAvatar({
         id: req['session'].currentUser.id,
-        avatar: Config.qiniuConfig.domain + result.key
+        avatar: addr
       })
-      
-      // PicServer.insertPic({
-      //   name: files["file"]["originalFilename"],
-      //   addr: Config.qiniuConfig.domain + result.key,
-      //   uploader: req['session'].currentUser.id,
-      // })
-      return res.json(new ApiResult(ResponseStatus.success, {result: true}, "success"))
+      return res.json(new ApiResult(ResponseStatus.success, {addr}, "success"))
     }catch(e) {
       console.log(e);
       

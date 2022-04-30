@@ -4,11 +4,9 @@
  * @Author: Adxiong
  * @Date: 2022-04-11 15:32:30
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-11 21:35:29
+ * @LastEditTime: 2022-04-27 00:39:55
  */
 
-import { reject } from "lodash"
-import { resolve } from "path"
 import * as qiniu from "qiniu"
 import Config from "../config"
 
@@ -54,6 +52,25 @@ class QiNiu {
   download(key: string): string{
       return this.bucketManager.publicDownloadUrl(this.publicBucketDomain, key)  
   }
+
+  async batchDelete(data: {key: string}[]): Promise<any>{
+    const deleteOperations = data.map(item => qiniu.rs.deleteOp(Config.qiniuConfig.scope , item.key))
+    return new Promise((resolve, reject) => {
+      console.log(deleteOperations);
+      
+      this.bucketManager.batch(deleteOperations, (e: Error, respBody: any, respInfo: any) => {
+        if(e){
+          reject(e)
+        }
+        if (parseInt(respInfo.statusCode) / 100 == 2) {
+          resolve(respBody)
+        } else {
+          reject({deleteusCode: respInfo.deleteusCode, data: JSON.stringify(respBody)})
+        }
+      })
+    })
+  }
+  
 }
 
 export default new QiNiu()
