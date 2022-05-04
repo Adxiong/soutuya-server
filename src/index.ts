@@ -5,7 +5,7 @@ import { cors } from 'cors';
  * @Author: Adxiong
  * @Date: 2022-04-07 23:23:37
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-05-04 20:58:53
+ * @LastEditTime: 2022-05-04 23:29:52
  */
 
 import * as express from "express"
@@ -17,6 +17,7 @@ import api from "./controll"
 import util from './utils/util';
 import errorHandle from './middleware/errorHandle';
 import notFound from './middleware/notFound';
+import auth from './middleware/auth';
 const expressIp = require('express-ip')
 const app = express()
 
@@ -31,6 +32,7 @@ app.use(session({
 app.use(express.urlencoded())
 app.use(express.json())
 
+app.use(auth)
 app.use('/api', api)
 app.use(errorHandle)
 app.use(notFound)
