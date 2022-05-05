@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-11 23:18:19
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-04-27 00:24:32
+ * @LastEditTime: 2022-05-05 22:22:53
  */
 
 
@@ -26,9 +26,10 @@ class PicServer{
     return await PicDao.myUploadPics(start, num)
   }
 
-  async batchDeletePic(data:string[]): Promise<any>{
+  async batchDeletePic(data:string[]): Promise<boolean>{
     const keyObjFormData = data.map( item => {return {key: item}})
-    return qiNiu.batchDelete(keyObjFormData)
+    qiNiu.batchDelete(keyObjFormData)
+    return await PicDao.batchDeletePic(data)
   }
 }
 

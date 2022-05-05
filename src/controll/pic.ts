@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:59
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-05-02 17:15:33
+ * @LastEditTime: 2022-05-05 22:26:51
  */
 
 import { Router, Request, Response, NextFunction } from "express"
@@ -63,6 +63,7 @@ router.post('/upload', (req: Request, res: Response, next: NextFunction) => {
         name: files["files"]["originalFilename"],
         addr,
         uploader: req['session'].currentUser.id,
+        key: result.key
       })
       return res.json(new ApiResult(ResponseStatus.success, {result: true ,addr:Config.qiniuConfig.domain + result.key}, "success"))
     }catch(e) {
@@ -88,15 +89,15 @@ router.get("/myUploadPics", async(req: Request, res: Response, next: NextFunctio
 router.post("/batchDeletePic", async(req: Request, res: Response, next: NextFunction) => {
   if(req['session']) {
     const data: string[] = req.body.data
-    console.log("删除的照片===》",data);
    try {
     const result = await PicServer.batchDeletePic(data)
-    console.log(result);
+    if( result) {
+      res.json(new ApiResult(ResponseStatus.success, null, "删除成功"))
+    } 
    }catch(err){
      console.log(err);
-     
+     res.json(new ApiResult(ResponseStatus.fail, null, err.message))
    }
-    
   }
 })
 
