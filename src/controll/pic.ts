@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-04-08 11:01:59
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-05-05 22:26:51
+ * @LastEditTime: 2022-05-07 23:23:44
  */
 
 import { Router, Request, Response, NextFunction } from "express"
@@ -51,9 +51,9 @@ router.post('/upload', (req: Request, res: Response, next: NextFunction) => {
     if(err){
       console.log(err);
     }
-
-    const file = fs.createReadStream(files["files"]['filepath'])
-
+    const file = fs.createReadStream(files["files"]['filepath'])    
+    console.log(file);
+    
     try{
       const result = await qiNiu.upload( file)
       const addr = Config.qiniuConfig.domain + result.key
@@ -68,7 +68,7 @@ router.post('/upload', (req: Request, res: Response, next: NextFunction) => {
       return res.json(new ApiResult(ResponseStatus.success, {result: true ,addr:Config.qiniuConfig.domain + result.key}, "success"))
     }catch(e) {
       console.log(e);
-      
+      return res.json(new ApiResult(ResponseStatus.fail, null, e.message.toString()))
     }
     
   })
